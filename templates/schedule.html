@@ -1,0 +1,297 @@
+<!DOCTYPE ht <div class="container">
+<header class="header fade-in">
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Create Schedule - Study Tracker</title>
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+      />
+    </head>
+    <body>
+      <div class="container">
+        <header class="header fade-in">
+          <a href="{{ url_for('dashboard') }}" class="logo">📚 Study Tracker</a>
+          <nav class="nav-links">
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('subjects') }}">📖 Subjects</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small"
+              >Logout</a
+            >
+          </nav>
+        </header>
+
+        <div class="card fade-in">
+          <div class="text-center">
+            <h2 style="color: #667eea; margin-bottom: 10px">
+              📅 Create Study Schedule
+            </h2>
+            <p style="color: #666">
+              Plan your study sessions and build consistent learning habits
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="card fade-in">
+            <h3>⏰ Schedule Details</h3>
+            <form method="POST">
+              <div class="form-group">
+                <label for="start_time">
+                  🌅 Study Start Time
+                  <small
+                    style="color: #666; font-weight: normal; display: block"
+                    >When do you want to start studying each day?</small
+                  >
+                </label>
+                <input type="time" id="start_time" name="start_time" required />
+              </div>
+
+              <div class="form-group">
+                <label for="end_time">
+                  🌙 Study End Time
+                  <small
+                    style="color: #666; font-weight: normal; display: block"
+                    >When do you want to finish studying each day?</small
+                  >
+                </label>
+                <input type="time" id="end_time" name="end_time" required />
+              </div>
+
+              <div class="form-group">
+                <label for="study_hours">
+                  📊 Study Hours Per Day
+                  <small
+                    style="color: #666; font-weight: normal; display: block"
+                    >How many hours do you want to study daily? (0.5 - 24
+                    hours)</small
+                  >
+                </label>
+                <input
+                  type="number"
+                  id="study_hours"
+                  name="study_hours"
+                  step="0.5"
+                  min="0.5"
+                  max="24"
+                  placeholder="e.g., 3.5"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn w-100">
+                🚀 Generate My Schedule
+              </button>
+            </form>
+
+            <div class="text-center mt-20">
+              <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                ← Back to Dashboard
+              </a>
+            </div>
+          </div>
+
+          <div class="card fade-in">
+            <h3>💡 Scheduling Tips</h3>
+
+            <div class="mb-20">
+              <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+                ⏰ Best Practices
+              </h4>
+              <ul style="list-style: none; padding: 0">
+                <li style="margin-bottom: 10px">
+                  <span style="color: #28a745">✅</span> Choose times when
+                  you're most alert
+                </li>
+                <li style="margin-bottom: 10px">
+                  <span style="color: #28a745">✅</span> Start with 2-4 hours
+                  per day if you're new
+                </li>
+                <li style="margin-bottom: 10px">
+                  <span style="color: #28a745">✅</span> Include breaks in your
+                  schedule
+                </li>
+                <li style="margin-bottom: 10px">
+                  <span style="color: #28a745">✅</span> Be consistent with your
+                  timing
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-20">
+              <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+                📝 Schedule Examples
+              </h4>
+              <div
+                style="
+                  background: rgba(102, 126, 234, 0.1);
+                  padding: 15px;
+                  border-radius: 8px;
+                  margin-bottom: 10px;
+                "
+              >
+                <strong>Morning Learner</strong><br />
+                <small>Start: 7:00 AM | End: 11:00 AM | Hours: 3.5</small>
+              </div>
+              <div
+                style="
+                  background: rgba(102, 126, 234, 0.1);
+                  padding: 15px;
+                  border-radius: 8px;
+                  margin-bottom: 10px;
+                "
+              >
+                <strong>Evening Studier</strong><br />
+                <small>Start: 7:00 PM | End: 10:00 PM | Hours: 2.5</small>
+              </div>
+              <div
+                style="
+                  background: rgba(102, 126, 234, 0.1);
+                  padding: 15px;
+                  border-radius: 8px;
+                "
+              >
+                <strong>Intensive Study</strong><br />
+                <small>Start: 9:00 AM | End: 6:00 PM | Hours: 6</small>
+              </div>
+            </div>
+
+            <div>
+              <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+                🎯 Study Goals
+              </h4>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <span class="stat-number">25</span>
+                  <span class="stat-label">Min Focus Time</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-number">5</span>
+                  <span class="stat-label">Min Breaks</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card fade-in"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(102, 126, 234, 0.1),
+              rgba(118, 75, 162, 0.1)
+            );
+          "
+        >
+          <h3>🔄 How Schedule Generation Works</h3>
+          <div class="grid grid-3">
+            <div class="text-center p-10">
+              <div style="font-size: 2em; margin-bottom: 10px">⚙️</div>
+              <h4 style="font-size: 1em; color: #667eea">1. Analyze</h4>
+              <p style="font-size: 0.9em; color: #666">
+                We analyze your available time and study preferences
+              </p>
+            </div>
+            <div class="text-center p-10">
+              <div style="font-size: 2em; margin-bottom: 10px">📋</div>
+              <h4 style="font-size: 1em; color: #667eea">2. Organize</h4>
+              <p style="font-size: 0.9em; color: #666">
+                Topics are distributed across your study sessions
+              </p>
+            </div>
+            <div class="text-center p-10">
+              <div style="font-size: 2em; margin-bottom: 10px">📅</div>
+              <h4 style="font-size: 1em; color: #667eea">3. Schedule</h4>
+              <p style="font-size: 0.9em; color: #666">
+                A personalized study calendar is created for you
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card fade-in">
+          <h3>📊 Your Current Status</h3>
+          <div class="grid grid-2">
+            <div>
+              <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+                📚 Study Materials
+              </h4>
+              <p style="color: #666; margin-bottom: 10px">
+                Make sure you have subjects and topics set up before creating a
+                schedule.
+              </p>
+              <div class="d-flex gap-10">
+                <a
+                  href="{{ url_for('subjects') }}"
+                  class="btn btn-small btn-outline"
+                  >📖 Manage Subjects</a
+                >
+              </div>
+            </div>
+            <div>
+              <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+                ⏰ Study Environment
+              </h4>
+              <p style="color: #666; margin-bottom: 10px">
+                Choose a quiet, comfortable space for your study sessions.
+              </p>
+              <ul style="list-style: none; padding: 0">
+                <li style="margin-bottom: 5px">
+                  <span style="color: #28a745">•</span> Good lighting
+                </li>
+                <li style="margin-bottom: 5px">
+                  <span style="color: #28a745">•</span> Minimal distractions
+                </li>
+                <li>
+                  <span style="color: #28a745">•</span> All materials ready
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const form = document.querySelector("form");
+          const startTime = document.getElementById("start_time");
+          const endTime = document.getElementById("end_time");
+          const studyHours = document.getElementById("study_hours");
+          startTime.value = "09:00";
+          endTime.value = "17:00";
+          studyHours.value = "3.0";
+          function validateTimeRange() {
+            if (startTime.value && endTime.value) {
+              const start = new Date(`2000-01-01 ${startTime.value}`);
+              const end = new Date(`2000-01-01 ${endTime.value}`);
+              const diffHours = (end - start) / (1000 * 60 * 60);
+
+              if (diffHours <= 0) {
+                endTime.setCustomValidity("End time must be after start time");
+              } else if (parseFloat(studyHours.value) > diffHours) {
+                studyHours.setCustomValidity(
+                  `Study hours cannot exceed available time (${diffHours} hours)`
+                );
+              } else {
+                endTime.setCustomValidity("");
+                studyHours.setCustomValidity("");
+              }
+            }
+          }
+
+          startTime.addEventListener("change", validateTimeRange);
+          endTime.addEventListener("change", validateTimeRange);
+          studyHours.addEventListener("input", validateTimeRange);
+          form.addEventListener("submit", function (e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = "⏳ Generating Schedule...";
+            submitBtn.disabled = true;
+          });
+        });
+      </script>
+    </body>
+  </html>
+</header>

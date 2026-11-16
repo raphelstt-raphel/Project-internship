@@ -1,0 +1,182 @@
+<!DOCTYPE ht <div class="container">
+<header class="header fade-in">
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Dashboard - Study Tracker</title>
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+      />
+    </head>
+    <body>
+      <div class="container">
+        <!-- Header -->
+        <header class="header fade-in">
+          <a href="{{ url_for('dashboard') }}" class="logo">📚 Study Tracker</a>
+          <nav class="nav-links">
+            <span style="color: #666">Welcome, {{ email }}!</span>
+            <a href="{{ url_for('subjects') }}">📖 Subjects</a>
+            <a href="{{ url_for('study_schedule') }}">📅 Schedule</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small"
+              >Logout</a
+            >
+          </nav>
+        </header>
+
+        <div class="stats-grid fade-in">
+          <div class="stat-card">
+            <span class="stat-number">{{ subjects|length }}</span>
+            <span class="stat-label">Total Subjects</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">
+              {% set total_topics = 0 %} {% for subject in subjects %} {% set
+              total_topics = total_topics + subject_progress[subject.id].total
+              %} {% endfor %} {{ total_topics }}
+            </span>
+            <span class="stat-label">Total Topics</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">
+              {% set completed_topics = 0 %} {% for subject in subjects %} {%
+              set completed_topics = completed_topics +
+              subject_progress[subject.id].completed %} {% endfor %} {{
+              completed_topics }}
+            </span>
+            <span class="stat-label">Completed Topics</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">
+              {% if total_topics > 0 %} {{ ((completed_topics / total_topics) *
+              100) | round | int }}% {% else %} 0% {% endif %}
+            </span>
+            <span class="stat-label">Overall Progress</span>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="card fade-in">
+            <div class="d-flex justify-between align-center mb-20">
+              <h3>📚 Your Subjects</h3>
+              <a href="{{ url_for('subjects') }}" class="btn btn-small"
+                >Manage</a
+              >
+            </div>
+
+            {% if subjects %}
+            <ul class="list">
+              {% for subject in subjects %}
+              <li class="list-item">
+                <div class="list-item-content">
+                  <div class="d-flex justify-between align-center mb-10">
+                    <strong>{{ subject.name }}</strong>
+                    <span style="color: #667eea; font-weight: 600">
+                      {{ subject_progress[subject.id].percentage }}%
+                    </span>
+                  </div>
+                  <div class="progress-bar">
+                    <div
+                      class="progress-fill"
+                      data-progress="{{ subject_progress[subject.id].percentage }}"
+                    ></div>
+                  </div>
+                  <small style="color: #666">
+                    {{ subject_progress[subject.id].completed }}/{{
+                    subject_progress[subject.id].total }} topics completed
+                  </small>
+                </div>
+                <div class="list-item-actions">
+                  <a
+                    href="{{ url_for('topics', subject_id=subject.id) }}"
+                    class="btn btn-small btn-outline"
+                  >
+                    View Topics
+                  </a>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <div class="text-center p-20" style="color: #666">
+              <p>📝 No subjects added yet.</p>
+              <a href="{{ url_for('subjects') }}" class="btn btn-small mt-10"
+                >Add Your First Subject</a
+              >
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="card fade-in">
+            <div class="d-flex justify-between align-center mb-20">
+              <h3>📅 Upcoming Schedule</h3>
+              <a
+                href="{{ url_for('study_schedule') }}"
+                class="btn btn-small btn-secondary"
+                >Create</a
+              >
+            </div>
+
+            {% if upcoming_schedule %}
+            <div class="schedule-table">
+              <table style="width: 100%">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Topic</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in upcoming_schedule %}
+                  <tr>
+                    <td>
+                      <strong
+                        >{{ item.start_time }} - {{ item.end_time }}</strong
+                      >
+                    </td>
+                    <td>{{ item.subject_name }}</td>
+                    <td>{{ item.topic_name or 'General revision' }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="text-center p-20" style="color: #666">
+              <p>⏰ No upcoming schedule.</p>
+              <a
+                href="{{ url_for('study_schedule') }}"
+                class="btn btn-small mt-10"
+                >Create Schedule</a
+              >
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card fade-in">
+          <h3>🚀 Quick Actions</h3>
+          <div class="d-flex gap-20" style="flex-wrap: wrap; margin-top: 20px">
+            <a href="{{ url_for('subjects') }}" class="btn"
+              >📖 Manage Subjects</a
+            >
+            <a href="{{ url_for('study_schedule') }}" class="btn btn-secondary"
+              >📅 Create Schedule</a
+            >
+            {% if subjects %}
+            <a
+              href="{{ url_for('topics', subject_id=subjects[0].id) }}"
+              class="btn btn-success"
+              >✏️ Study Topics</a
+            >
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
+  </html>
+</header>

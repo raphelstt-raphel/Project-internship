@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topics - Study Tracker</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header fade-in">
+        <a href="{{ url_for('dashboard') }}" class="logo">📚 Study Tracker</a>
+        <nav class="nav-links">
+          <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+          <a href="{{ url_for('subjects') }}">📖 Subjects</a>
+          <a href="{{ url_for('study_schedule') }}">📅 Schedule</a>
+          <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small"
+            >Logout</a
+          >
+        </nav>
+      </header>
+
+      <div class="card fade-in">
+        <div class="d-flex justify-between align-center">
+          <div>
+            <h2 style="color: #667eea; margin-bottom: 5px">
+              📖 {{ subject.name }}
+            </h2>
+            <p style="color: #666">Manage topics and track your progress</p>
+          </div>
+          <div class="text-right">
+            <div class="stat-card" style="display: inline-block; margin: 0">
+              <span class="stat-number"
+                >{{ topics|selectattr('is_completed')|list|length }}/{{
+                topics|length }}</span
+              >
+              <span class="stat-label">Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="fade-in">
+        {% for category, message in messages %}
+        <div
+          class="alert alert-{{ 'error' if category == 'danger' else category }}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <div class="grid grid-2">
+        <div class="card fade-in">
+          <h3>➕ Add New Topic</h3>
+          <form method="POST">
+            <div class="form-group">
+              <label for="topic_name">Topic Name</label>
+              <input
+                type="text"
+                id="topic_name"
+                name="topic_name"
+                placeholder="Enter topic name (e.g., Algebra, Calculus)"
+                required
+              />
+            </div>
+            <button type="submit" class="btn w-100">Add Topic</button>
+          </form>
+
+          <div
+            class="mt-20 p-10"
+            style="background: rgba(102, 126, 234, 0.1); border-radius: 8px"
+          >
+            <small style="color: #667eea">
+              💡 Add specific topics you want to study in {{ subject.name }}
+            </small>
+          </div>
+        </div>
+
+        <div class="card fade-in">
+          <h3>📊 Progress Overview</h3>
+          {% set completed_count = topics|selectattr('is_completed')|list|length
+          %} {% set total_count = topics|length %} {% set completion_percentage
+          = (completed_count / total_count * 100) | round if total_count > 0
+          else 0 %}
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">{{ total_count }}</span>
+              <span class="stat-label">Total Topics</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ completed_count }}</span>
+              <span class="stat-label">Completed</span>
+            </div>
+          </div>
+
+          <div class="mt-20">
+            <div class="d-flex justify-between align-center mb-10">
+              <small>Overall Progress</small>
+              <small>{{ completion_percentage }}%</small>
+            </div>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                data-progress="{{ completion_percentage }}"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fade-in">
+        <div class="d-flex justify-between align-center mb-20">
+          <h3>📝 Your Topics</h3>
+          <span class="btn btn-outline btn-small"
+            >{{ topics|length }} Topic{{ 's' if topics|length != 1 else ''
+            }}</span
+          >
+        </div>
+
+        {% if topics %}
+        <ul class="list">
+          {% for topic in topics %}
+          <li class="list-item">
+            <div class="list-item-content">
+              <div class="d-flex align-center gap-10">
+                <span style="font-size: 1.5em">
+                  {% if topic.is_completed %} ✅ {% else %} 📝 {% endif %}
+                </span>
+                <div>
+                  <strong
+                    class="topic-name"
+                    data-completed="{{ topic.is_completed | lower }}"
+                  >
+                    {{ topic.name }}
+                  </strong>
+                  <br />
+                  <small
+                    class="topic-status"
+                    data-completed="{{ topic.is_completed | lower }}"
+                  >
+                    {% if topic.is_completed %} ✓ Completed {% else %} ⏳ In
+                    Progress {% endif %}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="list-item-actions">
+              <a
+                href="{{ url_for('toggle_topic', topic_id=topic.id) }}"
+                class="btn btn-small {{ 'btn-outline' if topic.is_completed else 'btn-success' }}"
+              >
+                {% if topic.is_completed %} Mark Incomplete {% else %} Mark
+                Complete {% endif %}
+              </a>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+
+        {% if completed_count == total_count and total_count > 0 %}
+        <div
+          class="text-center mt-20 p-20"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(40, 167, 69, 0.1),
+              rgba(40, 167, 69, 0.2)
+            );
+            border-radius: 10px;
+          "
+        >
+          <div style="font-size: 3em; margin-bottom: 10px">🎉</div>
+          <h4 style="color: #28a745">Congratulations!</h4>
+          <p style="color: #28a745">
+            You've completed all topics in {{ subject.name }}!
+          </p>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-20">
+          <a href="{{ url_for('subjects') }}" class="btn btn-outline">
+            ← Back to Subjects
+          </a>
+        </div>
+        {% else %}
+        <div class="text-center p-20" style="color: #666">
+          <div style="font-size: 4em; margin-bottom: 20px">📝</div>
+          <h4>No Topics Added Yet</h4>
+          <p>Start by adding your first topic for {{ subject.name }}!</p>
+          <a href="{{ url_for('subjects') }}" class="btn btn-outline mt-10">
+            ← Back to Subjects
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+      <div
+        class="card fade-in"
+        style="
+          background: linear-gradient(
+            135deg,
+            rgba(102, 126, 234, 0.1),
+            rgba(118, 75, 162, 0.1)
+          );
+        "
+      >
+        <h3>💡 Study Tips for {{ subject.name }}</h3>
+        <div class="grid grid-2">
+          <div>
+            <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+              📚 Effective Studying
+            </h4>
+            <ul style="list-style: none; padding: 0">
+              <li style="margin-bottom: 8px">
+                <span style="color: #667eea">•</span> Break topics into smaller
+                subtopics
+              </li>
+              <li style="margin-bottom: 8px">
+                <span style="color: #667eea">•</span> Review completed topics
+                regularly
+              </li>
+              <li>
+                <span style="color: #667eea">•</span> Use active recall
+                techniques
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: #667eea; font-size: 1em; margin-bottom: 10px">
+              ⏰ Time Management
+            </h4>
+            <ul style="list-style: none; padding: 0">
+              <li style="margin-bottom: 8px">
+                <span style="color: #667eea">•</span> Set realistic daily goals
+              </li>
+              <li style="margin-bottom: 8px">
+                <span style="color: #667eea">•</span> Use the Pomodoro Technique
+              </li>
+              <li>
+                <span style="color: #667eea">•</span> Schedule regular study
+                sessions
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggleLinks = document.querySelectorAll(
+          'a[href*="toggle_topic"]'
+        );
+        toggleLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            const listItem = this.closest(".list-item");
+            listItem.style.opacity = "0.6";
+            listItem.style.transform = "scale(0.98)";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

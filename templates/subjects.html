@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subjects - Study Tracker</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header fade-in">
+        <a href="{{ url_for('dashboard') }}" class="logo">📚 Study Tracker</a>
+        <nav class="nav-links">
+          <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+          <a href="{{ url_for('study_schedule') }}">📅 Schedule</a>
+          <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small"
+            >Logout</a
+          >
+        </nav>
+      </header>
+
+      <div class="grid grid-2">
+        <div class="card fade-in">
+          <h3>➕ Add New Subject</h3>
+
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %} {% for category, message in messages %}
+          <div
+            class="alert alert-{{ 'error' if category == 'danger' else category }}"
+          >
+            {{ message }}
+          </div>
+          {% endfor %} {% endif %} {% endwith %} {% if subjects|length <
+          max_subjects %}
+          <form method="POST">
+            <div class="form-group">
+              <label for="subject_name">Subject Name</label>
+              <input
+                type="text"
+                id="subject_name"
+                name="subject_name"
+                placeholder="Enter subject name (e.g., Mathematics, Science)"
+                required
+              />
+            </div>
+            <button type="submit" class="btn w-100">Add Subject</button>
+          </form>
+
+          <div
+            class="mt-20 p-10"
+            style="background: rgba(102, 126, 234, 0.1); border-radius: 8px"
+          >
+            <small style="color: #667eea">
+              📊 You can add up to {{ max_subjects }} subjects. Currently: {{
+              subjects|length }}/{{ max_subjects }}
+            </small>
+          </div>
+          {% else %}
+          <div
+            class="text-center p-20"
+            style="
+              background: rgba(255, 193, 7, 0.1);
+              border-radius: 10px;
+              border: 2px dashed #ffc107;
+            "
+          >
+            <h4 style="color: #856404; margin-bottom: 10px">
+              📚 Subject Limit Reached
+            </h4>
+            <p style="color: #856404">
+              You've reached the maximum number of subjects ({{ max_subjects
+              }}).
+            </p>
+            <small style="color: #856404"
+              >Remove a subject to add a new one.</small
+            >
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="card fade-in">
+          <h3>📊 Subject Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">{{ subjects|length }}</span>
+              <span class="stat-label">Total Subjects</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number"
+                >{{ max_subjects - subjects|length }}</span
+              >
+              <span class="stat-label">Available Slots</span>
+            </div>
+          </div>
+
+          <div class="mt-20">
+            <div class="d-flex justify-between align-center mb-10">
+              <small>Usage</small>
+              <small>{{ subjects|length }}/{{ max_subjects }}</small>
+            </div>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                data-progress="{{ (subjects|length / max_subjects * 100) | round }}"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fade-in">
+        <div class="d-flex justify-between align-center mb-20">
+          <h3>📚 Your Subjects</h3>
+          <span class="btn btn-outline btn-small"
+            >{{ subjects|length }} Subject{{ 's' if subjects|length != 1 else ''
+            }}</span
+          >
+        </div>
+
+        {% if subjects %}
+        <ul class="list">
+          {% for subject in subjects %}
+          <li class="list-item">
+            <div class="list-item-content">
+              <div class="d-flex align-center gap-10">
+                <span style="font-size: 1.5em">📖</span>
+                <div>
+                  <strong style="font-size: 1.1em">{{ subject.name }}</strong>
+                  <br />
+                  <small style="color: #666">
+                    Subject ID: {{ subject.id }} | Added recently
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="list-item-actions">
+              <a
+                href="{{ url_for('topics', subject_id=subject.id) }}"
+                class="btn btn-small"
+              >
+                📝 View Topics
+              </a>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <div class="text-center mt-20">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+            ← Back to Dashboard
+          </a>
+        </div>
+        {% else %}
+        <div class="text-center p-20" style="color: #666">
+          <div style="font-size: 4em; margin-bottom: 20px">📚</div>
+          <h4>No Subjects Added Yet</h4>
+          <p>Start by adding your first subject above!</p>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-outline mt-10">
+            ← Back to Dashboard
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+      <div
+        class="card fade-in"
+        style="
+          background: linear-gradient(
+            135deg,
+            rgba(102, 126, 234, 0.1),
+            rgba(118, 75, 162, 0.1)
+          );
+        "
+      >
+        <h3>💡 Tips</h3>
+        <ul style="list-style: none; padding: 0">
+          <li style="margin-bottom: 10px">
+            <span style="color: #667eea">✅</span> Add subjects that you're
+            currently studying
+          </li>
+          <li style="margin-bottom: 10px">
+            <span style="color: #667eea">✅</span> Use descriptive names like
+            "Advanced Mathematics" instead of just "Math"
+          </li>
+          <li style="margin-bottom: 10px">
+            <span style="color: #667eea">✅</span> You can track progress for
+            each subject through topics
+          </li>
+          <li>
+            <span style="color: #667eea">✅</span> Create study schedules based
+            on your subjects
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
